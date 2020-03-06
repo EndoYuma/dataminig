@@ -1,0 +1,119 @@
+Cy17212@‰““¡—E^
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> train<-read.csv("train.csv",header=TRUE,stringsAsFactors = F,na.strings=(c("NA","")))
+> test<-read.csv("test.csv",header=TRUE,stringsAsFactors = F,na.strings=(c("NA","")))
+> train_mod<-train
+> train_mod$Survived<-as.factor(train_mod$Survived)
+> train_mod$Pclass<-as.factor(train_mod$Pclass)
+> train_mod$Embarked<-as.factor(train_mod$Embarked)
+> test_mod<-test
+> test_mod$Pclass<-as.factor(test_mod$Pclass)
+> test_mod$Sex<-as.factor(test_mod$Sex)
+> test_mod$Embarked<-as.factor(test_mod$Embarked)
+> sapply(train_mod, function(x)sum(is.na(x)))
+PassengerId    Survived      Pclass        Name         Sex 
+          0           0           0           0           0 
+        Age       SibSp       Parch      Ticket        Fare 
+        177           0           0           0           0 
+      Cabin    Embarked 
+        687           2 
+> sapply(test_mod, function(x)sum(is.na(x)))
+PassengerId      Pclass        Name         Sex         Age 
+          0           0           0           0          86 
+      SibSp       Parch      Ticket        Fare       Cabin 
+          0           0           0           1         327 
+   Embarked 
+          0 
+> median(test_mod$Fare[!is.na(test_mod$Fare)])
+[1] 14.4542
+> test_mod$Fare[is.na(test_mod$Fare)]<-14.4542
+> median(train_mod$Age[!is.na(train_mod$Age)])
+[1] 28
+> median(test_mod$Age[!is.na(test_mod$Age)])
+[1] 27
+> train_mod$Age[is.na(train_mod$Age)] <- 28
+> test_mod$Age[is.na(test_mod$Age)] <- 27
+> table(train_mod$Embarked)
+
+  C   Q   S 
+168  77 644 
+> train_mod$Cabin<-NULL
+> train_mod$Embarked[is.na(train_mod$Embarked)]<-as.factor("S")
+> test_mod$Cabin<-NULL
+> sapply(train_mod,function(x)sum(is.na(x)))
+PassengerId    Survived      Pclass        Name         Sex 
+          0           0           0           0           0 
+        Age       SibSp       Parch      Ticket        Fare 
+          0           0           0           0           0 
+   Embarked 
+          0 
+> sapply(test_mod,function(x)sum(is.na(x)))
+PassengerId      Pclass        Name         Sex         Age 
+          0           0           0           0           0 
+      SibSp       Parch      Ticket        Fare    Embarked 
+          0           0           0           0           0 
+> install.packages("rpart")
+Installing package into e/home/rstudio-user/R/x86_64-pc-linux-gnu-library/3.6f
+(as elibf is unspecified)
+trying URL 'http://package-proxy/src/contrib/rpart_4.1-15.tar.gz'
+Content type 'application/x-tar' length 759368 bytes (741 KB)
+==================================================
+downloaded 741 KB
+
+* installing *binary* package erpartf ...
+* DONE (rpart)
+
+The downloaded source packages are in
+	e/tmp/RtmptTp5kV/downloaded_packagesf
+> install.packages("rpart.plot")
+Installing package into e/home/rstudio-user/R/x86_64-pc-linux-gnu-library/3.6f
+(as elibf is unspecified)
+trying URL 'http://package-proxy/src/contrib/rpart.plot_3.0.8.tar.gz'
+Content type 'application/x-tar' length 1068610 bytes (1.0 MB)
+==================================================
+downloaded 1.0 MB
+
+* installing *binary* package erpart.plotf ...
+* DONE (rpart.plot)
+
+The downloaded source packages are in
+	e/tmp/RtmptTp5kV/downloaded_packagesf
+> frame<-data.frame(Survived=train_mod$Survived,Pclass=train_mod$Pclass,Sex=train_mod$Sex,Age=train_mod$Age,Fare=train_mod$Fare,Parch=train_mod$Parch,Embarked=train_mod$Embarked)
+> library(rpart)
+> library(rpart.plot)
+> ket_wo<-rpart(Survived~.,frame)
+> rpart.plot(ket_wo,extra=1,uniform=T)
+> test_A<-predict(ket_wo,newdate=test_mod,type="class")
+> write.table(test_A,"output.csv",quote=F,col.names=T,append=T)
+Warning message:
+In write.table(test_A, "output.csv", quote = F, col.names = T, append = T) :
+  appending column names to file
+> passengerID<-test[,c(1)]
+> test_A<-predict(ket_wo,newdata=test_mod,type="class")
+> Ans_A<-data.frame(passengerid=passengerID,Survived=test_A)
+> write.table(Ans_A,"Answer.csv",quote=F,sep=",",row.names=FALSE)
+> write.table(test_A,"output.txt",quote=F,col.names=T,append=T)
+Warning message:
+In write.table(test_A, "output.txt", quote = F, col.names = T, append = T) :
+  appending column names to file
+> passengerID<-test[,c(1)]
+> test_A<-predict(ket_wo,newdata=test_mod,type="class")
+> Ans_A<-data.frame(passengerid=passengerID,Survived=test_A)
+> write.table(Ans_A,"Answer.csv",quote=F,sep=",",row.names=FALSE)
+
